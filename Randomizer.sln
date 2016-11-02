@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randomizer.Model", "Randomi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randomizer.Core", "Randomizer.Core\Randomizer.Core.csproj", "{09AB3246-6F10-4DE5-8CC0-4DAFAAC2B1BD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Randomizer.Model.Tests", "Randomizer.Model.Tests\Randomizer.Model.Tests.csproj", "{71200117-5E76-4769-B51F-AF834477F16E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{09AB3246-6F10-4DE5-8CC0-4DAFAAC2B1BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09AB3246-6F10-4DE5-8CC0-4DAFAAC2B1BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09AB3246-6F10-4DE5-8CC0-4DAFAAC2B1BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71200117-5E76-4769-B51F-AF834477F16E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71200117-5E76-4769-B51F-AF834477F16E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71200117-5E76-4769-B51F-AF834477F16E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71200117-5E76-4769-B51F-AF834477F16E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

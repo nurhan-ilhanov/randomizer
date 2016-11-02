@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Randomizer.Model
 {
-    public class Class1
+    public interface IRandomElement
     {
+        int ID { get; }
     }
 }
