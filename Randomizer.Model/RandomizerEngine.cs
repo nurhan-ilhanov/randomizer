@@ -6,48 +6,56 @@ using System.Threading.Tasks;
 
 namespace Randomizer.Model
 {
-    public static class RandomizerEngine
+    public class RandomizerEngine
     {
-        private static Random rnd = new Random(DateTime.Now.Millisecond * DateTime.Now.Second);
+        private Random rnd = new Random(DateTime.Now.Millisecond * DateTime.Now.Second);
 
-        public static T GetElement<T>(IQueryable<T> collection) where T : IRandomElement
+        public T GetElement<T>(IQueryable<T> collection) where T : IRandomElement
         {
             var randomNumber = rnd.Next(0, collection.Count() - 1);
 
             return collection.ElementAt(randomNumber);
         }
 
-        public static IEnumerable<T> GetElements<T>(IQueryable<T> collection, int numberOfElements) where T : IRandomElement
+        public IEnumerable<T> GetElements<T>(IQueryable<T> collection, int numberOfElements) where T : IRandomElement
         {
             var returnElements = new List<T>();
+            var collectionList = collection.ToList();
 
-            for (int i = 0; i < numberOfElements; i++)
+            if (numberOfElements > collection.Count())
             {
-                var randomNumber = rnd.Next(0, collection.Count() - 1);
-                returnElements.Add(collection.ElementAt(randomNumber));
+                throw new ArgumentOutOfRangeException();
+            }
+
+            else
+            {
+                for (int i = 0; i < numberOfElements; i++)
+                {
+                    var randomNumber = rnd.Next(0, collection.Count() - 1);
+                    returnElements.Add(collection.ElementAt(randomNumber));
+                    collectionList.RemoveAt(randomNumber);
+                }
             }
 
             return returnElements.AsEnumerable<T>();
-
         }
 
-        public static IEnumerable<T> Shuffle<T>(IQueryable<T> collection) where T : IRandomElement
+        public IEnumerable<T> Shuffle<T>(IQueryable<T> collection) where T : IRandomElement
         {
             var shuffledElements = new List<T>();
-            T randomElement;
+            var collectionList = collection.ToList();
 
-            for (int i = 0; i < collection.Count(); i++)
+            while(collectionList.Count() != 0)
             {
-                var tempElement = collection.ElementAt(i);
-                randomElement = collection.ElementAt(rnd.Next(i, collection.Count() - 1));
-                
-                shuffledElements.Add(randomElement);
+                var randomNumber = rnd.Next(0, collectionList.Count() - 1);
+                shuffledElements.Add(collectionList.ElementAt(randomNumber));
+                collectionList.RemoveAt(randomNumber);
             }
 
             return shuffledElements.AsEnumerable<T>();
         }
 
-        public static List<string> GetIpsList(string ipFrom, string ipTo)
+        public List<string> GetIpsList(string ipFrom, string ipTo)
         {
             //"10.10.0.10"//from
             //    "10.10.0.250"//to
@@ -56,29 +64,89 @@ namespace Randomizer.Model
 
             var ipFromArray = ipFrom.Split('.');
             var ipToArray = ipTo.Split('.');
-            int counter = 0;
-            List<string> helpArray = new List<string>();
+
+            var listFrom = new List<int>();
+            var listTo = new List<int>();
             var ipsList = new List<string>();
 
-            for (int i = ipFromArray.Count() - 1; i >= 0; i++)
+            for (int i = 0; i < ipFrom.Count(); i++)
             {
-                if (String.Compare(ipFromArray[i],ipToArray[i]) < 0)
-                {
-                    counter++;
-
-                    int from = Convert.ToInt32(ipFromArray[i]);
-                    int to = Convert.ToInt32(ipToArray[i]);
-
-                    for (int j = 0; j < to - from; j++)
-                    {
-                        var ip = ipFromArray;
-                        ip[ip.Count() - counter] = to.ToString();
-                        ipsList.Add(ip.ToString());
-
-                        to++;
-                    }
-                }
+                listFrom[i] = Convert.ToInt32(ipToArray[i]);
+                listTo[i] = Convert.ToInt32(ipToArray[i]);
             }
+
+            int maxNumber = 255;
+
+            //for first number
+            if (listTo[0] == listFrom[0])
+            {
+                if (listTo[1] >= listFrom[1])
+                {
+                    if (listTo[2] < listFrom[2] && listFrom[1] == listTo[1])
+                    {
+                        throw new FormatException();
+                    }
+                    else
+                    {
+                        for (int i = listFrom[3]; i <= maxNumber; i++)
+                        {
+                            string ip = ipFromArray[0] + "." + ipFromArray[1] + "." + ipFromArray[2] + "." + i.ToString();
+                            ipsList.Add(ip);
+                        }
+
+                        for (int i = listFrom[2]; i < maxNumber; i++)
+                        {
+                            for (int j = 0; j < maxNumber; j++)
+                            {
+                                string ip = ipFromArray[0] + "." + ipFromArray[1] + "." + i.ToString() + "." + j.ToString();
+                                ipsList.Add(ip);
+                            }
+
+                        }
+
+                        for (int i = listFrom[1] + 1; i < listTo[1]; i++)
+                        {
+                            for (int j = 0; j < maxNumber; j++)
+                            {
+                                for (int k = 0; k < maxNumber; k++)
+                                {
+                                    string ip = ipFromArray[0] + "." + i.ToString() + "." + j.ToString() + "." + k.ToString();
+                                    ipsList.Add(ip);
+                                }
+
+                            }
+                        }
+
+                        for (int i = 0; i < listTo[2]; i++)
+                        {
+                            for (int j = 0; j < maxNumber; j++)
+                            {
+                                string ip = ipFromArray[0] + "." + ipToArray[1] + "." + i.ToString() + "." + j.ToString();
+                                ipsList.Add(ip);
+                            }
+
+                        }
+
+                        for (int i = 0; i <= listTo[3]; i++)
+                        {
+                            string ip = ipFromArray[0] + "." + ipToArray[1] + "." + ipToArray[2] + "." + i.ToString();
+                            ipsList.Add(ip);
+                        }
+                    }
+
+                }
+                else if (listTo[1] < listFrom[1])
+                {
+                    throw new FormatException();
+                }
+
+            }
+
+            else if (listTo[0] > listFrom[0])
+            {
+
+            }
+            else throw new FormatException();
 
             return ipsList;
         }
