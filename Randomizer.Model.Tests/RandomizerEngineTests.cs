@@ -13,7 +13,7 @@ namespace Randomizer.Model.Tests
     {
 
         [TestMethod()]
-        public void GetElementsTest()
+        public async Task GetElementsTest()
         {
             //Arrange
             var testCollection = new List<IRandomElement>();
@@ -26,13 +26,13 @@ namespace Randomizer.Model.Tests
 
             //Act
             var randomizerEngine = new RandomizerEngine();
-            var randomElements = randomizerEngine.GetElements(testCollection.AsQueryable(), 3);
+            var randomElements = await randomizerEngine.GetElements(testCollection.AsQueryable(), 3);
 
             Assert.IsTrue(!randomElements.Except(testCollection).Any());
         }
 
         [TestMethod()]
-        public void GetElementTest()
+        public async Task GetElementTest()
         {
             //Arrange
             var testCollection = new List<IRandomElement>();
@@ -45,18 +45,18 @@ namespace Randomizer.Model.Tests
 
             //Act
             var randomizerEngine = new RandomizerEngine();
-            var randomElement = randomizerEngine.GetElement(testCollection.AsQueryable());
+            var randomElement = await randomizerEngine.GetElement(testCollection.AsQueryable());
 
             Assert.IsTrue(testCollection.Any(e => e.ID == randomElement.ID));
         }
 
         [TestMethod()]
-        public void ShuffleTest()
+        public async Task ShuffleTest()
         {
             //Arrange
             var testCollection = new List<IRandomElement>();
 
-            for (int i = 1; i <= 100; i++)
+            for (int i = 1; i <= 10; i++)
             {
                 var element = new RandomElement(i);
                 testCollection.Add(element);
@@ -64,7 +64,7 @@ namespace Randomizer.Model.Tests
 
             //Act
             var randomizerEngine = new RandomizerEngine();
-            var shuffledElements = randomizerEngine.Shuffle(testCollection.AsQueryable());
+            var shuffledElements = await randomizerEngine.Shuffle(testCollection.AsQueryable());
 
             Assert.IsTrue(testCollection.SequenceEqual(shuffledElements.OrderBy(e => e.ID).ToList()));
         }
