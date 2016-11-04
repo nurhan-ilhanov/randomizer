@@ -1,25 +1,31 @@
-﻿using System;
+﻿using Randomizer.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Randomizer.Model
+namespace Randomizer.Core
 {
     public class RandomizerEngine
     {
         private Random rnd = new Random(DateTime.Now.Millisecond * DateTime.Now.Second);
 
+        private int GenerateRandomNumber<T>(IEnumerable<T> collection) where T : IRandomElement
+        {
+            return rnd.Next(0, collection.Count() - 1);
+        }
+
         public async Task<T> GetElement<T>(IQueryable<T> collection) where T : IRandomElement
         {
             return await Task.Run(() =>
              {
-                 var randomNumber = rnd.Next(0, collection.Count() - 1);
+                 var randomNumber = this.GenerateRandomNumber(collection);
 
                  return collection.ElementAt(randomNumber);
              });
-            
+
         }
 
         public async Task<IEnumerable<T>> GetElements<T>(IQueryable<T> collection, int numberOfElements) where T : IRandomElement
@@ -37,7 +43,8 @@ namespace Randomizer.Model
                 {
                     for (int i = 0; i < numberOfElements; i++)
                     {
-                        var randomNumber = rnd.Next(0, collection.Count() - 1);
+                        var randomNumber = this.GenerateRandomNumber(collection);
+
                         returnElements.Add(collection.ElementAt(randomNumber));
                         collectionList.RemoveAt(randomNumber);
                     }
@@ -56,7 +63,8 @@ namespace Randomizer.Model
             {
                 while (collectionList.Count() != 0)
                 {
-                    var randomNumber = rnd.Next(0, collectionList.Count() - 1);
+                    var randomNumber = this.GenerateRandomNumber(collectionList);
+
                     shuffledElements.Add(collectionList.ElementAt(randomNumber));
                     collectionList.RemoveAt(randomNumber);
                 }
