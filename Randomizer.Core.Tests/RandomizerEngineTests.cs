@@ -1,15 +1,15 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Randomizer.Model;
+﻿using Randomizer.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace Randomizer.Core.Tests
 {
-    [TestClass()]
     public class RandomizerEngineTests
     {
-        [TestMethod()]
+        [Fact]
         public async Task GetElementsTest()
         {
             //Arrange
@@ -17,7 +17,7 @@ namespace Randomizer.Core.Tests
 
             for (int i = 1; i <= 100; i++)
             {
-                var element = new RandomElement(i);
+                var element = new TestElement(i);
                 testCollection.Add(element);
             }
 
@@ -25,10 +25,10 @@ namespace Randomizer.Core.Tests
             var randomizerEngine = new RandomizerEngine();
             var randomElements = await randomizerEngine.GetElements(testCollection.AsQueryable(), 3);
 
-            Assert.IsTrue(!randomElements.Except(testCollection).Any());
+            Assert.True(!randomElements.Except(testCollection).Any());
         }
 
-        [TestMethod()]
+        [Fact]
         public async Task GetElementTest()
         {
             //Arrange
@@ -36,7 +36,7 @@ namespace Randomizer.Core.Tests
 
             for (int i = 1; i <= 100; i++)
             {
-                var element = new RandomElement(i);
+                var element = new TestElement(i);
                 testCollection.Add(element);
             }
 
@@ -44,10 +44,10 @@ namespace Randomizer.Core.Tests
             var randomizerEngine = new RandomizerEngine();
             var randomElement = await randomizerEngine.GetElement(testCollection.AsQueryable());
 
-            Assert.IsTrue(testCollection.Any(e => e.ID == randomElement.ID));
+            Assert.True(testCollection.Any(e => e.ID == randomElement.ID));
         }
 
-        [TestMethod()]
+        [Fact]
         public async Task ShuffleTest()
         {
             //Arrange
@@ -55,7 +55,7 @@ namespace Randomizer.Core.Tests
 
             for (int i = 1; i <= 10; i++)
             {
-                var element = new RandomElement(i);
+                var element = new TestElement(i);
                 testCollection.Add(element);
             }
 
@@ -63,7 +63,7 @@ namespace Randomizer.Core.Tests
             var randomizerEngine = new RandomizerEngine();
             var shuffledElements = await randomizerEngine.Shuffle(testCollection.AsQueryable());
 
-            Assert.IsTrue(testCollection.SequenceEqual(shuffledElements.OrderBy(e => e.ID).ToList()));
+            Assert.True(testCollection.SequenceEqual(shuffledElements.OrderBy(e => e.ID).ToList()));
         }
     }
 }
