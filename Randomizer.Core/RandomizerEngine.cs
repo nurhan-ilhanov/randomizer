@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Randomizer.Core
@@ -12,19 +11,19 @@ namespace Randomizer.Core
     {
         private Random rnd = new Random(DateTime.Now.Millisecond * DateTime.Now.Second);
 
-        private int GenerateRandomNumber<T>(IEnumerable<T> collection) where T : IRandomElement
+        private int GenerateRandomNumber(int maxValue)
         {
-            return rnd.Next(0, collection.Count() - 1);
+            return rnd.Next(0, maxValue);
         }
 
         public async Task<T> GetElement<T>(IQueryable<T> collection) where T : IRandomElement
         {
             return await Task.Run(() =>
-             {
-                 var randomNumber = this.GenerateRandomNumber(collection);
+            {
+                var randomNumber = this.GenerateRandomNumber(collection.Count() - 1);
 
-                 return collection.ElementAt(randomNumber);
-             });
+                return collection.ElementAt(randomNumber);
+            });
 
         }
 
@@ -43,7 +42,7 @@ namespace Randomizer.Core
                 {
                     for (int i = 0; i < numberOfElements; i++)
                     {
-                        var randomNumber = this.GenerateRandomNumber(collection);
+                        var randomNumber = this.GenerateRandomNumber(collection.Count() - 1);
 
                         returnElements.Add(collection.ElementAt(randomNumber));
                         collectionList.RemoveAt(randomNumber);
@@ -56,17 +55,20 @@ namespace Randomizer.Core
 
         public async Task<IEnumerable<T>> Shuffle<T>(IQueryable<T> collection) where T : IRandomElement
         {
-            var shuffledElements = new List<T>();
-            var collectionList = collection.ToList();
+            var shuffledElements = collection.ToList();
 
             return await Task.Run(() =>
             {
-                while (collectionList.Count() != 0)
-                {
-                    var randomNumber = this.GenerateRandomNumber(collectionList);
+                int counter = shuffledElements.Count();
 
-                    shuffledElements.Add(collectionList.ElementAt(randomNumber));
-                    collectionList.RemoveAt(randomNumber);
+                while (counter > 1)
+                {
+                    counter--;
+                    var randomNumber = this.GenerateRandomNumber(counter);
+                    var tempElement = shuffledElements[randomNumber];
+
+                    shuffledElements[randomNumber] = shuffledElements[counter];
+                    shuffledElements[counter] = tempElement;
                 }
 
                 return shuffledElements.AsEnumerable<T>();
