@@ -20,7 +20,7 @@ namespace Randomizer.Core
         {
             return await Task.Run(() =>
             {
-                var randomNumber = this.GenerateRandomNumber(collection.Count() - 1);
+                var randomNumber = this.GenerateRandomNumber(collection.Count());
 
                 return collection.ElementAt(randomNumber);
             });
@@ -42,7 +42,7 @@ namespace Randomizer.Core
                 {
                     for (int i = 0; i < numberOfElements; i++)
                     {
-                        var randomNumber = this.GenerateRandomNumber(collection.Count() - 1);
+                        var randomNumber = this.GenerateRandomNumber(collection.Count());
 
                         returnElements.Add(collection.ElementAt(randomNumber));
                         collectionList.RemoveAt(randomNumber);
