@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Randomizer.Web.Models;
+using Randomizer.Model;
 
 namespace Randomizer.Web.Data
 {
@@ -13,7 +9,11 @@ namespace Randomizer.Web.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+
         }
+
+        public DbSet<SimpleElement> Elements { get; set; }
+        public DbSet<ElementList> ElementLists { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
