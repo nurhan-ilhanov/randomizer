@@ -14,11 +14,11 @@ namespace Randomizer.Model
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
-        public virtual ICollection<SimpleElement> List { get; set; }
+        public virtual ICollection<SimpleElement> Elements { get; set; }
 
         public ElementList()
         {
-            this.List = new List<SimpleElement>();
+            this.Elements = new List<SimpleElement>();
         }
     }
 }

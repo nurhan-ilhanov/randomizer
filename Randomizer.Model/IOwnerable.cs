@@ -8,8 +8,5 @@ namespace Randomizer.Model
     public interface IOwnerable
     {
         string UserID { get; set; }
-        int CreatedBy { get; set; }
-        int ModifiedBy { get; set; }
-        int DeletedBy { get; set; }
     }
 }

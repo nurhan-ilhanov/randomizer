@@ -30,7 +30,7 @@ namespace Randomizer.Core
         public async Task<IEnumerable<T>> GetElements<T>(IQueryable<T> collection, int numberOfElements) where T : IRandomElement
         {
             var returnElements = new List<T>();
-            var collectionList = collection.ToList();
+            var collectionList = await this.Shuffle(collection);
 
             return await Task.Run(() =>
             {
@@ -42,10 +42,7 @@ namespace Randomizer.Core
                 {
                     for (int i = 0; i < numberOfElements; i++)
                     {
-                        var randomNumber = this.GenerateRandomNumber(collection.Count());
-
-                        returnElements.Add(collection.ElementAt(randomNumber));
-                        collectionList.RemoveAt(randomNumber);
+                        returnElements.Add(collectionList.ElementAt(i));
                     }
                 }
 

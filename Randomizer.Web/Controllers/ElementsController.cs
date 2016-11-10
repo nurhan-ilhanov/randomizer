@@ -7,9 +7,11 @@ using Randomizer.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Randomizer.Model;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Randomizer.Web.Controllers
 {
+    [Authorize]
     public class ElementsController : Controller
     {
         private readonly RandomizerContext _db;
@@ -29,6 +31,26 @@ namespace Randomizer.Web.Controllers
                 .ToList();
 
             return View(elements);
+        }
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var element = await _db.Elements
+                .Include(e => e.User)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(m => m.ID == id);
+
+            if (element == null)
+            {
+                return NotFound();
+            }
+
+            return View(element);
         }
 
         [HttpGet]
@@ -88,19 +110,23 @@ namespace Randomizer.Web.Controllers
         }
 
         [HttpPost, ActionName("Edit")]
-        public async Task<IActionResult> EditPost(int? id, SimpleElement model)
+        public async Task<IActionResult> EditPost(int? id)
         {
-            if (id != model.ID)
+            if (id == null)
             {
                 return NotFound();
             }
-            if (ModelState.IsValid)
+
+            var elementToUpdate = await _db.Elements.SingleOrDefaultAsync(s => s.ID == id);
+
+            if (await TryUpdateModelAsync<SimpleElement>(
+                elementToUpdate,
+                "",
+                s => s.Name, s => s.Description))
             {
                 try
                 {
-                    _db.Update(model);
                     await _db.SaveChangesAsync();
-
                     return RedirectToAction("Index");
                 }
                 catch (DbUpdateException)
@@ -110,7 +136,59 @@ namespace Randomizer.Web.Controllers
                         "see your system administrator.");
                 }
             }
-            return View(model);
+
+            return View(elementToUpdate);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var element = await _db.Elements
+                .Include(e => e.User)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(m => m.ID == id);
+            if (element == null)
+            {
+                return NotFound();
+            }
+
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewData["ErrorMessage"] =
+                    "Delete failed. Try again, and if the problem persists " +
+                    "see your system administrator.";
+            }
+
+            return View(element);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var element = await _db.Elements
+                .AsNoTracking()
+                .SingleOrDefaultAsync(m => m.ID == id);
+            if (element == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            try
+            {
+                _db.Elements.Remove(element);
+                await _db.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            catch (DbUpdateException)
+            {
+                return RedirectToAction("Delete", new { id = id, saveChangesError = true });
+            }
         }
     }
 }

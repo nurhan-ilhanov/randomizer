@@ -45,7 +45,8 @@
       "version": "1.0.0-preview2-final",
       "type": "build"
     },
-    "Randomizer.Model": "1.0.0-*"
+    "Randomizer.Model": "1.0.0-*",
+    "Randomizer.Core": "1.0.0-*"
   },
 
   "tools": {
