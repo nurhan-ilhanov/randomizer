@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Randomizer.Model
 {
-    public class ElementList
+    public class ElementList : BaseEntity, IOwnerable
     {
-        [Key]
-        public int ID { get; set; }
+        public ElementList()
+        {
+            this.Elements = new List<SimpleElement>();
+        }
+
+        [ForeignKey("User")]
+        public string UserID { get; set; }
 
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
         public virtual ICollection<SimpleElement> Elements { get; set; }
+        public virtual ApplicationUser User { get; set; }
 
-        public ElementList()
-        {
-            this.Elements = new List<SimpleElement>();
-        }
     }
 }

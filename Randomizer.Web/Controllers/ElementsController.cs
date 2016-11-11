@@ -28,6 +28,7 @@ namespace Randomizer.Web.Controllers
             var elements = _db.Elements.OrderBy(e => e.Name)
                 .Include(e => e.User)
                 .AsNoTracking()
+                .Where(e => e.UserID == _userManager.GetUserId(User))
                 .ToList();
 
             return View(elements);
@@ -70,8 +71,7 @@ namespace Randomizer.Web.Controllers
                 {
                     if (User.Identity.IsAuthenticated)
                     {
-                        var user = await _userManager.GetUserAsync(User);
-                        model.UserID = user.Id;
+                        model.UserID =  _userManager.GetUserId(User);
                     }
 
                     _db.Add(model);

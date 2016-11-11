@@ -20,6 +20,11 @@ namespace Randomizer.Core
         {
             return await Task.Run(() =>
             {
+                if (collection.Count() == 0)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+
                 var randomNumber = this.GenerateRandomNumber(collection.Count());
 
                 return collection.ElementAt(randomNumber);

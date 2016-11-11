@@ -3,12 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Randomizer.Model
 {
-    public class SimpleElement : IOwnerable, IRandomElement
+    public class SimpleElement : BaseEntity, IOwnerable, IRandomElement
     {
-
-        [Key]
-        public int ID { get; set; }
-
         [ForeignKey("User")]
         public string UserID { get; set; }
 
