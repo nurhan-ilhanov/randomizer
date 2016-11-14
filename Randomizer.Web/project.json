@@ -1,4 +1,4 @@
-﻿{
+{
   "userSecretsId": "aspnet-Randomizer.Web-a0cb0deb-3e0f-4941-bfeb-da15abb1ecc2",
 
   "dependencies": {
@@ -41,10 +41,12 @@
       "version": "1.0.0-preview2-final",
       "type": "build"
     },
-    "Microsoft.VisualStudio.Web.CodeGenerators.Mvc":  {
+    "Microsoft.VisualStudio.Web.CodeGenerators.Mvc": {
       "version": "1.0.0-preview2-final",
       "type": "build"
-    }
+    },
+    "Randomizer.Model": "1.0.0-*",
+    "Randomizer.Core": "1.0.0-*"
   },
 
   "tools": {

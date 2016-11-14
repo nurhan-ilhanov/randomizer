@@ -5,12 +5,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Randomizer.Web.Data;
 
-namespace Randomizer.Web.Data.Migrations
+namespace Randomizer.Web.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(RandomizerContext))]
+    [Migration("20161110075036_DeleteFieldsElements")]
+    partial class DeleteFieldsElements
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -182,11 +183,7 @@ namespace Randomizer.Web.Data.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.Property<string>("UserID");
-
                     b.HasKey("ID");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("ElementLists");
                 });
@@ -251,17 +248,10 @@ namespace Randomizer.Web.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Randomizer.Model.ElementList", b =>
-                {
-                    b.HasOne("Randomizer.Model.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID");
-                });
-
             modelBuilder.Entity("Randomizer.Model.SimpleElement", b =>
                 {
                     b.HasOne("Randomizer.Model.ElementList", "ElementList")
-                        .WithMany("Elements")
+                        .WithMany("List")
                         .HasForeignKey("ElementListID");
 
                     b.HasOne("Randomizer.Model.ApplicationUser", "User")

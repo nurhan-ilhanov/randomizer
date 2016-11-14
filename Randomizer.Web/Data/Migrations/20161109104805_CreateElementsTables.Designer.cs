@@ -8,9 +8,10 @@ using Randomizer.Web.Data;
 namespace Randomizer.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161109104805_CreateElementsTables")]
+    partial class CreateElementsTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -182,11 +183,7 @@ namespace Randomizer.Web.Data.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.Property<string>("UserID");
-
                     b.HasKey("ID");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("ElementLists");
                 });
@@ -196,9 +193,15 @@ namespace Randomizer.Web.Data.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<int>("DeletedBy");
+
                     b.Property<string>("Description");
 
                     b.Property<int?>("ElementListID");
+
+                    b.Property<int>("ModifiedBy");
 
                     b.Property<string>("Name")
                         .IsRequired();
@@ -251,17 +254,10 @@ namespace Randomizer.Web.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Randomizer.Model.ElementList", b =>
-                {
-                    b.HasOne("Randomizer.Model.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID");
-                });
-
             modelBuilder.Entity("Randomizer.Model.SimpleElement", b =>
                 {
                     b.HasOne("Randomizer.Model.ElementList", "ElementList")
-                        .WithMany("Elements")
+                        .WithMany("List")
                         .HasForeignKey("ElementListID");
 
                     b.HasOne("Randomizer.Model.ApplicationUser", "User")

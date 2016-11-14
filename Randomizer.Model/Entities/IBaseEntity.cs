@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace Randomizer.Model
 {
-    public interface IOwnerable
+    public interface IBaseEntity
     {
-        string UserID { get; set; }
+        int ID { get; set; }
     }
 }

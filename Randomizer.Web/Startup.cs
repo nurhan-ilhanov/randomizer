@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Randomizer.Model;
 using Randomizer.Web.Data;
-using Randomizer.Web.Models;
+using Randomizer.Web.Data.Repositories;
 using Randomizer.Web.Services;
 
 namespace Randomizer.Web
@@ -48,11 +45,18 @@ namespace Randomizer.Web
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddDbContext<RandomizerContext>(options =>
+               options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
+
+            // Repositories
+            services.AddScoped<IElementsRepository, ElementsRepository>();
+            services.AddScoped<IElementListsRepository, ElementListsRepository>();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
