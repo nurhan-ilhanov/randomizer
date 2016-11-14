@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Randomizer.Model;
 using Randomizer.Web.Data;
+using Randomizer.Web.Data.Repositories;
 using Randomizer.Web.Services;
 
 namespace Randomizer.Web
@@ -52,6 +53,10 @@ namespace Randomizer.Web
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
+
+            // Repositories
+            services.AddScoped<IElementsRepository, ElementsRepository>();
+            services.AddScoped<IElementListsRepository, ElementListsRepository>();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();

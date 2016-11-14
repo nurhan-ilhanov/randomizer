@@ -1,34 +1,33 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Randomizer.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Randomizer.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Randomizer.Web.Data.Repositories;
 
 namespace Randomizer.Web.Controllers
 {
     [Authorize]
     public class ElementsController : Controller
     {
-        private readonly RandomizerContext _db;
+        private readonly IElementsRepository _repository;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public ElementsController(RandomizerContext context, UserManager<ApplicationUser> userManager)
+        public ElementsController(IElementsRepository repository, UserManager<ApplicationUser> userManager)
         {
-            _db = context;
+            _repository = repository;
             _userManager = userManager;
         }
 
         public IActionResult Index()
         {
-            var elements = _db.Elements.OrderBy(e => e.Name)
-                .Include(e => e.User)
+            var elements = _repository.AllWhere(
+                e => e.UserID == _userManager.GetUserId(User),
+                e => e.User)
+                .OrderBy(e => e.Name)
                 .AsNoTracking()
-                .Where(e => e.UserID == _userManager.GetUserId(User))
                 .ToList();
 
             return View(elements);
@@ -41,10 +40,7 @@ namespace Randomizer.Web.Controllers
                 return NotFound();
             }
 
-            var element = await _db.Elements
-                .Include(e => e.User)
-                .AsNoTracking()
-                .SingleOrDefaultAsync(m => m.ID == id);
+            var element = await _repository.GetSingle(m => m.ID == id, e => e.User);
 
             if (element == null)
             {
@@ -71,11 +67,11 @@ namespace Randomizer.Web.Controllers
                 {
                     if (User.Identity.IsAuthenticated)
                     {
-                        model.UserID =  _userManager.GetUserId(User);
+                        model.UserID = _userManager.GetUserId(User);
                     }
 
-                    _db.Add(model);
-                    await _db.SaveChangesAsync();
+                    _repository.Create(model);
+                    await _repository.Save();
 
                     return RedirectToAction("Index");
                 }
@@ -97,9 +93,7 @@ namespace Randomizer.Web.Controllers
                 return NotFound();
             }
 
-            var element = await _db.Elements
-                .AsNoTracking()
-                .SingleOrDefaultAsync(m => m.ID == id);
+            var element = await _repository.GetSingle(m => m.ID == id);
 
             if (element == null)
             {
@@ -117,7 +111,7 @@ namespace Randomizer.Web.Controllers
                 return NotFound();
             }
 
-            var elementToUpdate = await _db.Elements.SingleOrDefaultAsync(s => s.ID == id);
+            var elementToUpdate = await _repository.All().SingleOrDefaultAsync(s => s.ID == id);
 
             if (await TryUpdateModelAsync<SimpleElement>(
                 elementToUpdate,
@@ -126,7 +120,7 @@ namespace Randomizer.Web.Controllers
             {
                 try
                 {
-                    await _db.SaveChangesAsync();
+                    await _repository.Save();
                     return RedirectToAction("Index");
                 }
                 catch (DbUpdateException)
@@ -148,10 +142,8 @@ namespace Randomizer.Web.Controllers
                 return NotFound();
             }
 
-            var element = await _db.Elements
-                .Include(e => e.User)
-                .AsNoTracking()
-                .SingleOrDefaultAsync(m => m.ID == id);
+            var element = await _repository.GetSingle(m => m.ID == id, e => e.User);
+
             if (element == null)
             {
                 return NotFound();
@@ -171,7 +163,7 @@ namespace Randomizer.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var element = await _db.Elements
+            var element = await _repository.All()
                 .AsNoTracking()
                 .SingleOrDefaultAsync(m => m.ID == id);
             if (element == null)
@@ -181,8 +173,8 @@ namespace Randomizer.Web.Controllers
 
             try
             {
-                _db.Elements.Remove(element);
-                await _db.SaveChangesAsync();
+                _repository.Delete(element);
+                await _repository.Save();
                 return RedirectToAction("Index");
             }
             catch (DbUpdateException)

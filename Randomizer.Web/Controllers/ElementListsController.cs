@@ -10,26 +10,28 @@ using Microsoft.EntityFrameworkCore;
 using Randomizer.Web.Models;
 using Randomizer.Core;
 using Microsoft.AspNetCore.Authorization;
+using Randomizer.Web.Data.Repositories;
 
 namespace Randomizer.Web.Controllers
 {
     [Authorize]
     public class ElementListsController : Controller
     {
-        private readonly RandomizerContext _repository;
+        private readonly IElementListsRepository _repository;
+        private readonly IElementsRepository _elementsRepo;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public ElementListsController(RandomizerContext repository, UserManager<ApplicationUser> userManager)
+        public ElementListsController(IElementListsRepository repository, IElementsRepository elementsRepo, UserManager<ApplicationUser> userManager)
         {
             _repository = repository;
+            _elementsRepo = elementsRepo;
             _userManager = userManager;
         }
 
-        public  IActionResult Index()
+        public IActionResult Index()
         {
-            var lists =  _repository.ElementLists.OrderBy(e => e.Name)
-                .AsNoTracking()
-                .Where(l => l.UserID == _userManager.GetUserId(User))
+            var lists = _repository.AllWhere(l => l.UserID == _userManager.GetUserId(User))
+                .OrderBy(e => e.Name)
                 .ToList();
 
             return View(lists);
@@ -42,10 +44,8 @@ namespace Randomizer.Web.Controllers
                 return NotFound();
             }
 
-            var list = await _repository.ElementLists
-                .Include(l => l.Elements)
-                .AsNoTracking()
-                .SingleOrDefaultAsync(m => m.ID == id);
+            var list = await _repository.GetSingle(m => m.ID == id,
+                l => l.Elements);
 
             if (list == null)
             {
@@ -77,8 +77,9 @@ namespace Randomizer.Web.Controllers
                     }
 
                     this.UpdateListElemens(selectedElements, model);
-                    _repository.Add(model);
-                    await _repository.SaveChangesAsync();
+
+                    _repository.Create(model);
+                    await _repository.Save();
 
                     return RedirectToAction("Index");
                 }
@@ -100,10 +101,8 @@ namespace Randomizer.Web.Controllers
                 return NotFound();
             }
 
-            var list = await _repository.ElementLists
-                .Include(l => l.Elements)
-                .AsNoTracking()
-                .SingleOrDefaultAsync(m => m.ID == id);
+            var list = await _repository.GetSingle(m => m.ID == id,
+                l => l.Elements);
 
             if (list == null)
             {
@@ -116,7 +115,8 @@ namespace Randomizer.Web.Controllers
 
         private void PopulateElementsInList(ElementList list)
         {
-            var allElements = _repository.Elements;
+
+            var allElements = _elementsRepo.All().AsNoTracking();
             var listElements = new List<int>(list.Elements.Select(e => e.ID));
             var viewModel = new List<ListElementViewModel>();
 
@@ -129,8 +129,8 @@ namespace Randomizer.Web.Controllers
                     InList = listElements.Contains(element.ID)
                 });
             }
-            ViewData["Elements"] = viewModel;
 
+            ViewData["Elements"] = viewModel;
         }
 
         [HttpPost, ActionName("Edit")]
@@ -141,7 +141,7 @@ namespace Randomizer.Web.Controllers
                 return NotFound();
             }
 
-            var listToUpdate = await _repository.ElementLists
+            var listToUpdate = await _repository.All()
                 .Include(l => l.Elements)
                 .SingleOrDefaultAsync(s => s.ID == id);
 
@@ -153,7 +153,7 @@ namespace Randomizer.Web.Controllers
                 this.UpdateListElemens(selectedElements, listToUpdate);
                 try
                 {
-                    await _repository.SaveChangesAsync();
+                    await _repository.Save();
                     return RedirectToAction("Index");
                 }
                 catch (DbUpdateException)
@@ -179,7 +179,8 @@ namespace Randomizer.Web.Controllers
             var listElements = new List<int>
                 (list.Elements.Select(e => e.ID));
 
-            foreach (var element in _repository.Elements)
+
+            foreach (var element in _elementsRepo.All().AsNoTracking())
             {
                 if (selectedElementsL.Contains(element.ID.ToString()))
                 {
@@ -199,6 +200,7 @@ namespace Randomizer.Web.Controllers
                     }
                 }
             }
+
         }
 
         [HttpGet]
@@ -209,9 +211,7 @@ namespace Randomizer.Web.Controllers
                 return NotFound();
             }
 
-            var list = await _repository.ElementLists
-                .AsNoTracking()
-                .SingleOrDefaultAsync(m => m.ID == id);
+            var list = await _repository.GetSingle(m => m.ID == id);
 
             if (list == null)
             {
@@ -232,10 +232,8 @@ namespace Randomizer.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var list = await _repository.ElementLists
-                .Include(l => l.Elements)
-                .AsNoTracking()
-                .SingleOrDefaultAsync(m => m.ID == id);
+            var list = await _repository.GetSingle(m => m.ID == id, 
+                l => l.Elements);
 
             if (list == null)
             {
@@ -244,8 +242,9 @@ namespace Randomizer.Web.Controllers
 
             try
             {
-                _repository.ElementLists.Remove(list);
-                await _repository.SaveChangesAsync();
+                _repository.Delete(list);
+                await _repository.Save();
+
                 return RedirectToAction("Index");
             }
             catch (DbUpdateException)
@@ -262,10 +261,8 @@ namespace Randomizer.Web.Controllers
                 return NotFound();
             }
 
-            var list = await _repository.ElementLists
-                .Include(l => l.Elements)
-                .AsNoTracking()
-                .SingleOrDefaultAsync(m => m.ID == id);
+            var list = await _repository.GetSingle(m => m.ID == id, 
+                l => l.Elements);
 
             if (list == null)
             {
@@ -284,7 +281,7 @@ namespace Randomizer.Web.Controllers
             {
                 return Json(new { ans = "There are not enough items in your list!" });
             }
-            
+
             return Json(new { ans = elementName });
         }
 
@@ -296,10 +293,8 @@ namespace Randomizer.Web.Controllers
                 return NotFound();
             }
 
-            var list = await _repository.ElementLists
-                .Include(l => l.Elements)
-                .AsNoTracking()
-                .SingleOrDefaultAsync(m => m.ID == id);
+            var list = await _repository.GetSingle(m => m.ID == id,
+                 l => l.Elements);
 
             if (list == null)
             {
@@ -323,7 +318,7 @@ namespace Randomizer.Web.Controllers
 
                 return Json(new { ans = "There are not enough items in your list!" });
             }
-            
+
             return Json(new { ans = names });
         }
     }
