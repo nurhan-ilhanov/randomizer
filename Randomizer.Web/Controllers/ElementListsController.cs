@@ -90,6 +90,8 @@ namespace Randomizer.Web.Controllers
                     "Try again, and if the problem persists " +
                     "see your system administrator.");
             }
+
+            this.PopulateElementsInList(model);
             return View(model);
         }
 
@@ -164,6 +166,7 @@ namespace Randomizer.Web.Controllers
                 }
             }
 
+            this.PopulateElementsInList(listToUpdate);
             return View(listToUpdate);
         }
 
@@ -192,7 +195,6 @@ namespace Randomizer.Web.Controllers
 
                 else
                 {
-
                     if (listElements.Contains(element.ID))
                     {
                         SimpleElement elementToRemove = list.Elements.SingleOrDefault(i => i.ID == element.ID);
