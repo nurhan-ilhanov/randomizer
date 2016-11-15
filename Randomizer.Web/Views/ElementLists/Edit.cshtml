@@ -4,8 +4,10 @@
 }
 
 <h2>Edit</h2>
-<h4>List</h4>
+<h4>@Model.Name</h4>
 <hr />
+
+<div class="text-danger" asp-validation-summary="ModelOnly"></div>
 <form class="form-horizontal" asp-controller="ElementLists" asp-action="Edit" method="post">
 
     <div class="form-group">
@@ -23,7 +25,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    @*<div class="form-group">
         <label asp-for="Elements" class="col-md-2 control-label">Items</label>
         <div class="col-md-offset-2 col-md-10">
             <table>
@@ -50,7 +52,20 @@
                     }
               </table>
          </div>
-    </div>
+    </div>*@
+
+    @for (int i = 0; i < Model.Elements.Count(); i++)
+    {
+        <h5>Item @(i+1)</h5>
+        @Html.EditorFor(model => model.Elements[i])
+        <div class="form-group">
+            <div class="col-md-2"></div>
+            <div class="col-md-10">
+                <a asp-action="Delete" asp-controller="Elements" asp-route-id="@Model.Elements[i].ID" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+        
+    }
 
     <div class="form-group">
         <div class="col-md-2"></div>

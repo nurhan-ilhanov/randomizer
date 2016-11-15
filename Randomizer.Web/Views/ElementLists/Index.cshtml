@@ -31,7 +31,8 @@
                 </td>
                 <td>
                     <a href="#" class="btn btn-default getRandom" data-id="@item.ID">Draw Item</a> 
-                    <a href="#" class="btn btn-default getRandoms" data-id="@item.ID">Draw Items</a> 
+                    <a href="#" class="btn btn-default getRandoms" data-id="@item.ID">Draw Items</a>
+                    <a class="btn btn-default" asp-action="AddItem" asp-route-id="@item.ID">Add Item</a> 
                     <a class="btn btn-default" asp-action="Edit" asp-route-id="@item.ID">Edit</a> 
                     <a class="btn btn-default" asp-action="Details" asp-route-id="@item.ID">Details</a> 
                     <a class="btn btn-default" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
@@ -71,4 +72,22 @@
             });
         }
     });
+
+    //$('.addItems').on('click', function () {
+
+    //    var itemId = $(this).attr('data-id');
+    //    var numberOfElements = prompt("How many items do you want to add?", "1");
+    //    $.get()
+    //    if (numberOfElements != null) {
+    //        $.ajax({
+    //            url: '/ElementLists/AddItems/',
+    //            type: 'GET',
+    //            data: { id: itemId, numberOfItems: numberOfElements },
+    //            success: function (result) {
+    //                var w = window.open();
+    //                $(w.document.body).html(result);
+    //            }
+    //        });
+    //    }
+    //});
 </script>

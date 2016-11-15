@@ -18,7 +18,7 @@ namespace Randomizer.Model
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
-        public virtual ICollection<SimpleElement> Elements { get; set; }
+        public virtual IList<SimpleElement> Elements { get; set; }
         public virtual ApplicationUser User { get; set; }
 
     }

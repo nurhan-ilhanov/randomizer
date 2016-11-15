@@ -8,6 +8,9 @@ namespace Randomizer.Model
         [ForeignKey("User")]
         public string UserID { get; set; }
 
+        [ForeignKey("ElementList")]
+        public int? ElementListID { get; set; }
+
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }

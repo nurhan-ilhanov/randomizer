@@ -32,6 +32,7 @@ namespace Randomizer.Web.Controllers
         {
             var lists = _repository.AllWhere(l => l.UserID == _userManager.GetUserId(User))
                 .OrderBy(e => e.Name)
+                .AsNoTracking()
                 .ToList();
 
             return View(lists);
@@ -59,7 +60,7 @@ namespace Randomizer.Web.Controllers
         public IActionResult Create()
         {
             var list = new ElementList();
-            this.PopulateElementsInList(list);
+            //this.PopulateElementsInList(list);
 
             return View(list);
         }
@@ -76,7 +77,7 @@ namespace Randomizer.Web.Controllers
                         model.UserID = _userManager.GetUserId(User);
                     }
 
-                    this.UpdateListElemens(selectedElements, model);
+                    //this.UpdateListElements(selectedElements, model);
 
                     _repository.Create(model);
                     await _repository.Save();
@@ -143,16 +144,14 @@ namespace Randomizer.Web.Controllers
                 return NotFound();
             }
 
-            var listToUpdate = await _repository.All()
-                .Include(l => l.Elements)
-                .SingleOrDefaultAsync(s => s.ID == id);
+            var listToUpdate = await _repository.GetSingle(s => s.ID == id, l => l.Elements);
 
             if (await TryUpdateModelAsync<ElementList>(
                 listToUpdate,
                 "",
                 s => s.Name, s => s.Description))
             {
-                this.UpdateListElemens(selectedElements, listToUpdate);
+                this.UpdateListElements(selectedElements, listToUpdate);
                 try
                 {
                     await _repository.Save();
@@ -170,7 +169,7 @@ namespace Randomizer.Web.Controllers
             return View(listToUpdate);
         }
 
-        private void UpdateListElemens(string[] selectedElements, ElementList list)
+        private void UpdateListElements(string[] selectedElements, ElementList list)
         {
             if (selectedElements == null)
             {
@@ -183,7 +182,7 @@ namespace Randomizer.Web.Controllers
                 (list.Elements.Select(e => e.ID));
 
 
-            foreach (var element in _elementsRepo.All().AsNoTracking())
+            foreach (var element in _elementsRepo.All())
             {
                 if (selectedElementsL.Contains(element.ID.ToString()))
                 {
@@ -203,6 +202,60 @@ namespace Randomizer.Web.Controllers
                 }
             }
 
+        }
+
+        public async Task<IActionResult> AddItem(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var list = await _repository.GetSingle(m => m.ID == id);
+
+            if (list == null)
+            {
+                return NotFound();
+            }
+
+            list.Elements.Add(new SimpleElement());
+
+            return View(list);
+        }
+
+        [HttpPost]
+        [ActionName("AddItem")]
+        public async Task<IActionResult> AddItemPost(int? id, ElementList model)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var listToUpdate = await _repository.GetSingle(s => s.ID == id, l => l.Elements);
+
+            try
+            {
+
+                if (User.Identity.IsAuthenticated)
+                {
+                    model.UserID = _userManager.GetUserId(User);
+                }
+
+                listToUpdate.Elements.Add(model.Elements.FirstOrDefault());
+
+                await _repository.Save();
+                return RedirectToAction("Index");
+
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists, " +
+                    "see your system administrator.");
+            }
+
+            return View(listToUpdate);
         }
 
         [HttpGet]
@@ -234,7 +287,7 @@ namespace Randomizer.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var list = await _repository.GetSingle(m => m.ID == id, 
+            var list = await _repository.GetSingle(m => m.ID == id,
                 l => l.Elements);
 
             if (list == null)
@@ -263,7 +316,7 @@ namespace Randomizer.Web.Controllers
                 return NotFound();
             }
 
-            var list = await _repository.GetSingle(m => m.ID == id, 
+            var list = await _repository.GetSingle(m => m.ID == id,
                 l => l.Elements);
 
             if (list == null)

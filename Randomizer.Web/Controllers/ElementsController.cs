@@ -163,9 +163,7 @@ namespace Randomizer.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var element = await _repository.All()
-                .AsNoTracking()
-                .SingleOrDefaultAsync(m => m.ID == id);
+            var element = await _repository.GetSingle(m => m.ID == id);
             if (element == null)
             {
                 return RedirectToAction("Index");
