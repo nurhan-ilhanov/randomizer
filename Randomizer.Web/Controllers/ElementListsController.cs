@@ -60,13 +60,12 @@ namespace Randomizer.Web.Controllers
         public IActionResult Create()
         {
             var list = new ElementList();
-            //this.PopulateElementsInList(list);
 
             return View(list);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ElementList model, string[] selectedElements)
+        public async Task<IActionResult> Create(ElementList model)
         {
             try
             {
@@ -76,8 +75,6 @@ namespace Randomizer.Web.Controllers
                     {
                         model.UserID = _userManager.GetUserId(User);
                     }
-
-                    //this.UpdateListElements(selectedElements, model);
 
                     _repository.Create(model);
                     await _repository.Save();
@@ -91,8 +88,7 @@ namespace Randomizer.Web.Controllers
                     "Try again, and if the problem persists " +
                     "see your system administrator.");
             }
-
-            this.PopulateElementsInList(model);
+            
             return View(model);
         }
 
@@ -111,47 +107,29 @@ namespace Randomizer.Web.Controllers
             {
                 return NotFound();
             }
-
-            this.PopulateElementsInList(list);
+            
             return View(list);
         }
 
-        private void PopulateElementsInList(ElementList list)
-        {
-
-            var allElements = _elementsRepo.All().AsNoTracking();
-            var listElements = new List<int>(list.Elements.Select(e => e.ID));
-            var viewModel = new List<ListElementViewModel>();
-
-            foreach (var element in allElements)
-            {
-                viewModel.Add(new ListElementViewModel
-                {
-                    ElementID = element.ID,
-                    ElementName = element.Name,
-                    InList = listElements.Contains(element.ID)
-                });
-            }
-
-            ViewData["Elements"] = viewModel;
-        }
-
         [HttpPost, ActionName("Edit")]
-        public async Task<IActionResult> EditPost(int? id, string[] selectedElements)
+        public async Task<IActionResult> EditPost(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var listToUpdate = await _repository.GetSingle(s => s.ID == id, l => l.Elements);
+            var listToUpdate = _repository.AllWhere(l => l.ID == id)
+                .Include(l => l.Elements)
+                    .ThenInclude(e => e.User)
+                .SingleOrDefault();
 
             if (await TryUpdateModelAsync<ElementList>(
                 listToUpdate,
                 "",
                 s => s.Name, s => s.Description))
             {
-                this.UpdateListElements(selectedElements, listToUpdate);
+
                 try
                 {
                     await _repository.Save();
@@ -165,98 +143,9 @@ namespace Randomizer.Web.Controllers
                 }
             }
 
-            this.PopulateElementsInList(listToUpdate);
             return View(listToUpdate);
         }
-
-        private void UpdateListElements(string[] selectedElements, ElementList list)
-        {
-            if (selectedElements == null)
-            {
-                list.Elements = new List<SimpleElement>();
-                return;
-            }
-
-            var selectedElementsL = new List<string>(selectedElements);
-            var listElements = new List<int>
-                (list.Elements.Select(e => e.ID));
-
-
-            foreach (var element in _elementsRepo.All())
-            {
-                if (selectedElementsL.Contains(element.ID.ToString()))
-                {
-                    if (!listElements.Contains(element.ID))
-                    {
-                        list.Elements.Add(element);
-                    }
-                }
-
-                else
-                {
-                    if (listElements.Contains(element.ID))
-                    {
-                        SimpleElement elementToRemove = list.Elements.SingleOrDefault(i => i.ID == element.ID);
-                        list.Elements.Remove(elementToRemove);
-                    }
-                }
-            }
-
-        }
-
-        public async Task<IActionResult> AddItem(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var list = await _repository.GetSingle(m => m.ID == id);
-
-            if (list == null)
-            {
-                return NotFound();
-            }
-
-            list.Elements.Add(new SimpleElement());
-
-            return View(list);
-        }
-
-        [HttpPost]
-        [ActionName("AddItem")]
-        public async Task<IActionResult> AddItemPost(int? id, ElementList model)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var listToUpdate = await _repository.GetSingle(s => s.ID == id, l => l.Elements);
-
-            try
-            {
-
-                if (User.Identity.IsAuthenticated)
-                {
-                    model.UserID = _userManager.GetUserId(User);
-                }
-
-                listToUpdate.Elements.Add(model.Elements.FirstOrDefault());
-
-                await _repository.Save();
-                return RedirectToAction("Index");
-
-            }
-            catch (DbUpdateException)
-            {
-                ModelState.AddModelError("", "Unable to save changes. " +
-                    "Try again, and if the problem persists, " +
-                    "see your system administrator.");
-            }
-
-            return View(listToUpdate);
-        }
+       
 
         [HttpGet]
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)

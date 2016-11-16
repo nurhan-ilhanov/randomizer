@@ -5,9 +5,9 @@
 
 <h2>Lists</h2>
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-primary" asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>
@@ -30,12 +30,11 @@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    <a href="#" class="btn btn-default getRandom" data-id="@item.ID">Draw Item</a> 
-                    <a href="#" class="btn btn-default getRandoms" data-id="@item.ID">Draw Items</a>
-                    <a class="btn btn-default" asp-action="AddItem" asp-route-id="@item.ID">Add Item</a> 
-                    <a class="btn btn-default" asp-action="Edit" asp-route-id="@item.ID">Edit</a> 
-                    <a class="btn btn-default" asp-action="Details" asp-route-id="@item.ID">Details</a> 
-                    <a class="btn btn-default" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    <a href="#" class="btn btn-sm btn-primary getRandom" data-id="@item.ID">Draw Item</a> 
+                    <a href="#" class="btn btn-sm btn-primary getRandoms" data-id="@item.ID">Draw Items</a>
+                    <a class="btn btn-sm btn-default" asp-action="Edit" asp-route-id="@item.ID">Edit</a> 
+                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.ID">Details</a> 
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                 </td>
             </tr>
         }
@@ -73,21 +72,4 @@
         }
     });
 
-    //$('.addItems').on('click', function () {
-
-    //    var itemId = $(this).attr('data-id');
-    //    var numberOfElements = prompt("How many items do you want to add?", "1");
-    //    $.get()
-    //    if (numberOfElements != null) {
-    //        $.ajax({
-    //            url: '/ElementLists/AddItems/',
-    //            type: 'GET',
-    //            data: { id: itemId, numberOfItems: numberOfElements },
-    //            success: function (result) {
-    //                var w = window.open();
-    //                $(w.document.body).html(result);
-    //            }
-    //        });
-    //    }
-    //});
 </script>

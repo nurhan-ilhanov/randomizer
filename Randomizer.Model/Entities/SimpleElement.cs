@@ -9,7 +9,7 @@ namespace Randomizer.Model
         public string UserID { get; set; }
 
         [ForeignKey("ElementList")]
-        public int? ElementListID { get; set; }
+        public int ElementListID { get; set; }
 
         [Required]
         public string Name { get; set; }

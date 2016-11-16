@@ -7,32 +7,17 @@
 <h4>List</h4>
 <hr />
 
-<dl>
-    <dt>
-        @Html.DisplayNameFor(model => model.Name)
-    </dt>
-    <dd>
-        @Html.DisplayFor(model => model.Name)
-    </dd>
-    <dt>
-        @Html.DisplayNameFor(model => model.Description)
-    </dt>
-    <dd>
-        @Html.DisplayFor(model => model.Description)
-    </dd>
-    <dt>@Html.DisplayNameFor(model => model.Elements)</dt>
-    <dd>
-        <ul>
-            @foreach (var item in Model.Elements)
-            {
-                <li>@Html.DisplayFor(modelItem => item.Name)</li>
-            }
-        </ul>
-    </dd>
+<h4>@Html.DisplayFor(model => model.Name)</h4>
+<p>@Html.DisplayFor(model => model.Description)</p>
 
-</dl>
+<ul>
+    @foreach (var item in Model.Elements)
+    {
+        <li>@Html.DisplayFor(modelItem => item.Name)</li>
+    }
+</ul>
 
 <p>
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-    <a asp-action="Index">Back to list</a>
+    <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@Model.ID">Edit</a> 
+    <a class="btn btn-default btn-sm" asp-action="Index">Back to list</a>
 </p>
