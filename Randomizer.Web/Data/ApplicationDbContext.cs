@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Randomizer.Model;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Randomizer.Web.Data
 {

@@ -4,10 +4,11 @@
 }
 
 <h2>Edit</h2>
-<h4>List</h4>
+<h4>@Model.Name</h4>
 <hr />
-<form class="form-horizontal" asp-controller="ElementLists" asp-action="Edit" method="post">
 
+<div class="text-danger" asp-validation-summary="ModelOnly"></div>
+<form class="form-horizontal" asp-controller="ElementLists" asp-action="Edit" method="post">
     <div class="form-group">
         <label asp-for="Name" class="col-md-2 control-label"></label>
         <div class="col-md-10">
@@ -22,42 +23,13 @@
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Elements" class="col-md-2 control-label">Items</label>
-        <div class="col-md-offset-2 col-md-10">
-            <table>
-                <tr>
-                    @{
-                        int cnt = 0;
-                        List<Randomizer.Web.Models.ListElementViewModel> elements = ViewBag.Elements;
-
-                        foreach (var element in elements)
-                        {
-                            if (cnt++ % 3 == 0)
-                            {
-                                @:</tr><tr>
-                            }
-                            @:<td>
-                                <input type="checkbox"
-                                       name="selectedELements"
-                                       value="@element.ElementID"
-                                       @(Html.Raw(element.InList ? "checked=\"checked\"" : "")) />
-                                @element.ElementName
-                            @:</td>
-                        }
-                        @:</tr>
-                    }
-              </table>
-         </div>
-    </div>
-
     <div class="form-group">
         <div class="col-md-2"></div>
         <div class="col-md-10">
-            <button type="submit" name="Save" class="btn btn-default">Save</button>
+            <button type="submit" name="Save" class="btn btn-primary">Save</button>
         </div>
     </div>
+    @Html.DisplayFor(m => m.Elements, "Elements")
 </form>
 
 <div class="form-group">

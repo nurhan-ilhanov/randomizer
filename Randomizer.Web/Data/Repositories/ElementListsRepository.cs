@@ -1,4 +1,5 @@
-﻿using Randomizer.Model;
+﻿using Microsoft.EntityFrameworkCore;
+using Randomizer.Model;
 using Randomizer.Web.Data.Repositories;
 using System;
 using System.Collections.Generic;

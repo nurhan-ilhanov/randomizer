@@ -13,11 +13,13 @@ namespace Randomizer.Web.Controllers
     public class ElementsController : Controller
     {
         private readonly IElementsRepository _repository;
+        private readonly IElementListsRepository _listsRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public ElementsController(IElementsRepository repository, UserManager<ApplicationUser> userManager)
+        public ElementsController(IElementsRepository repository, IElementListsRepository listsRepository, UserManager<ApplicationUser> userManager)
         {
             _repository = repository;
+            _listsRepository = listsRepository;
             _userManager = userManager;
         }
 
@@ -51,16 +53,35 @@ namespace Randomizer.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(int? listID)
         {
+            if (listID == null)
+            {
+                return NotFound();
+            }
+
+            var list = _listsRepository.GetById(listID.Value);
+
+            if (list == null)
+            {
+                return NotFound();
+            }
+
             var element = new SimpleElement();
 
             return View(element);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(SimpleElement model)
+        public async Task<IActionResult> Create(int listID, SimpleElement model)
         {
+            var list = await _listsRepository.GetSingle(m => m.ID == listID);
+
+            if (list == null)
+            {
+                return NotFound();
+            }
+
             try
             {
                 if (ModelState.IsValid)
@@ -70,10 +91,12 @@ namespace Randomizer.Web.Controllers
                         model.UserID = _userManager.GetUserId(User);
                     }
 
+                    model.ElementListID = listID;
+
                     _repository.Create(model);
                     await _repository.Save();
 
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Edit", "ElementLists", new { id = listID});
                 }
             }
             catch (DbUpdateException)
@@ -82,6 +105,7 @@ namespace Randomizer.Web.Controllers
                     "Try again, and if the problem persists " +
                     "see your system administrator.");
             }
+
             return View(model);
         }
 
@@ -163,9 +187,7 @@ namespace Randomizer.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var element = await _repository.All()
-                .AsNoTracking()
-                .SingleOrDefaultAsync(m => m.ID == id);
+            var element = await _repository.GetSingle(m => m.ID == id);
             if (element == null)
             {
                 return RedirectToAction("Index");

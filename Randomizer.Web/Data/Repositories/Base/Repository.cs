@@ -50,7 +50,7 @@ namespace Randomizer.Web.Data.Repositories
 
         public async Task<T> GetSingle(Expression<Func<T, bool>> predicate)
         {
-            return await _dbContext.Set<T>().AsNoTracking().SingleOrDefaultAsync(predicate);
+            return await _dbContext.Set<T>().SingleOrDefaultAsync(predicate);
         }
 
         public async Task<T> GetSingle(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties)
@@ -62,7 +62,7 @@ namespace Randomizer.Web.Data.Repositories
                 query = query.Include(includeProperty);
             }
 
-            return  await query.AsNoTracking().Where(predicate).SingleOrDefaultAsync();
+            return  await query.Where(predicate).SingleOrDefaultAsync();
         }
 
         public IQueryable<T> AllWhere(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties)
@@ -74,14 +74,13 @@ namespace Randomizer.Web.Data.Repositories
                 query = query.Include(includeProperty);
             }
 
-            return query.Where(predicate).AsNoTracking();
+            return query.Where(predicate);
         }
 
         public IQueryable<T> AllWhere(Expression<Func<T, bool>> predicate)
         {
             return _dbContext.Set<T>()
-             .Where(predicate)
-             .AsNoTracking();
+             .Where(predicate);
         }
 
         public async Task Save()

@@ -6,22 +6,10 @@
 <h3>Are you sure you want to delete this item?</h3>
 <p class="text-danger">@ViewData["ErrorMessage"]</p>
 
-<dl>
-    <dt>
-        @Html.DisplayNameFor(model => model.Name)
-    </dt>
-    <dd>
-        @Html.DisplayFor(model => model.Name)
-    </dd>
-    <dt>
-        @Html.DisplayNameFor(model => model.Description)
-    </dt>
-    <dd>
-        @Html.DisplayFor(model => model.Description)
-    </dd>
-</dl>
+<h4>@Html.DisplayFor(model => model.Name)</h4>
+<p>@Html.DisplayFor(model => model.Description)</p>
 
 <form class="form-horizontal" asp-controller="ElementLists" asp-action="Delete" method="post">
-    <button type="submit" class="btn btn-default">Delete</button>
+    <button type="submit" class="btn btn-primary">Delete</button>
     <a asp-action="Index" class="btn btn-default">Back to list</a>
 </form>

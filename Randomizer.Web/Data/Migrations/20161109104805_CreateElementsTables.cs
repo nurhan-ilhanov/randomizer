@@ -32,7 +32,7 @@ namespace Randomizer.Web.Data.Migrations
                     CreatedBy = table.Column<int>(nullable: false),
                     DeletedBy = table.Column<int>(nullable: false),
                     Description = table.Column<string>(nullable: true),
-                    ElementListID = table.Column<int>(nullable: true),
+                    ElementListID = table.Column<int>(nullable: false),
                     ModifiedBy = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: false),
                     UserID = table.Column<string>(nullable: true)
@@ -45,7 +45,7 @@ namespace Randomizer.Web.Data.Migrations
                         column: x => x.ElementListID,
                         principalTable: "ElementLists",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Elements_AspNetUsers_UserID",
                         column: x => x.UserID,

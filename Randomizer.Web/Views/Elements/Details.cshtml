@@ -7,28 +7,10 @@
 <h4>Element</h4>
 <hr />
 
-<dl>
-    <dt>
-        @Html.DisplayNameFor(model => model.Name)
-    </dt>
-    <dd>
-        @Html.DisplayFor(model => model.Name)
-    </dd>
-    <dt>
-        @Html.DisplayNameFor(model => model.Description)
-    </dt>
-    <dd>
-        @Html.DisplayFor(model => model.Description)
-    </dd>
-    <dt>
-        @Html.DisplayNameFor(model => model.User.UserName)
-    </dt>
-    <dd>
-        @Html.DisplayFor(model => model.User.UserName)
-    </dd>
-</dl>
+<h4>@Html.DisplayFor(model => model.Name)</h4>
+<p>@Html.DisplayFor(model => model.Description)</p>
 
 <p>
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-    <a asp-action="Index">Back to list</a>
+    <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@Model.ID">Edit</a> 
+    <a class="btn btn-default btn-sm" asp-action="Index">Back to list</a>
 </p>
