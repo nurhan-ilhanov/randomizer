@@ -9,6 +9,7 @@ using Randomizer.Model;
 using Randomizer.Web.Data;
 using Randomizer.Web.Data.Repositories;
 using Randomizer.Web.Services;
+using Sakura.AspNetCore.Mvc;
 
 namespace Randomizer.Web
 {
@@ -58,6 +59,12 @@ namespace Randomizer.Web
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            services.AddBootstrapPagerGenerator(options =>
+            {
+                // Use default pager options.
+                options.ConfigureDefault();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

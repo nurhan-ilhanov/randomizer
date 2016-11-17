@@ -6,6 +6,7 @@ using Randomizer.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Randomizer.Web.Data.Repositories;
+using Sakura.AspNetCore;
 
 namespace Randomizer.Web.Controllers
 {
@@ -15,22 +16,27 @@ namespace Randomizer.Web.Controllers
         private readonly IElementsRepository _repository;
         private readonly IElementListsRepository _listsRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly int _pageSize;
 
-        public ElementsController(IElementsRepository repository, IElementListsRepository listsRepository, UserManager<ApplicationUser> userManager)
+        public ElementsController(IElementsRepository repository, 
+            IElementListsRepository listsRepository, 
+            UserManager<ApplicationUser> userManager,
+            int pageSize = 10)
         {
+            _pageSize = pageSize;
             _repository = repository;
             _listsRepository = listsRepository;
             _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int page = 1)
         {
             var elements = _repository.AllWhere(
                 e => e.UserID == _userManager.GetUserId(User),
                 e => e.User)
                 .OrderBy(e => e.Name)
                 .AsNoTracking()
-                .ToList();
+                .ToPagedList(_pageSize, page);
 
             return View(elements);
         }

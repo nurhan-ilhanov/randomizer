@@ -11,6 +11,7 @@ using Randomizer.Web.Models;
 using Randomizer.Core;
 using Microsoft.AspNetCore.Authorization;
 using Randomizer.Web.Data.Repositories;
+using Sakura.AspNetCore;
 
 namespace Randomizer.Web.Controllers
 {
@@ -20,20 +21,25 @@ namespace Randomizer.Web.Controllers
         private readonly IElementListsRepository _repository;
         private readonly IElementsRepository _elementsRepo;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly int _pageSize;
 
-        public ElementListsController(IElementListsRepository repository, IElementsRepository elementsRepo, UserManager<ApplicationUser> userManager)
+        public ElementListsController(IElementListsRepository repository,
+            IElementsRepository elementsRepo,
+            UserManager<ApplicationUser> userManager,
+            int pageSize = 10)
         {
+            _pageSize = pageSize;
             _repository = repository;
             _elementsRepo = elementsRepo;
             _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int page = 1)
         {
             var lists = _repository.AllWhere(l => l.UserID == _userManager.GetUserId(User))
                 .OrderBy(e => e.Name)
                 .AsNoTracking()
-                .ToList();
+                .ToPagedList(_pageSize, page);
 
             return View(lists);
         }
@@ -88,7 +94,7 @@ namespace Randomizer.Web.Controllers
                     "Try again, and if the problem persists " +
                     "see your system administrator.");
             }
-            
+
             return View(model);
         }
 
@@ -107,7 +113,7 @@ namespace Randomizer.Web.Controllers
             {
                 return NotFound();
             }
-            
+
             return View(list);
         }
 
@@ -145,7 +151,7 @@ namespace Randomizer.Web.Controllers
 
             return View(listToUpdate);
         }
-       
+
 
         [HttpGet]
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)

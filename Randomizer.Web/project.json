@@ -46,7 +46,9 @@
       "type": "build"
     },
     "Randomizer.Model": "1.0.0-*",
-    "Randomizer.Core": "1.0.0-*"
+    "Randomizer.Core": "1.0.0-*",
+    "Sakura.AspNetCore.Mvc.PagedList": "2.0.9",
+    "Sakura.AspNetCore.PagedList": "2.0.1"
   },
 
   "tools": {

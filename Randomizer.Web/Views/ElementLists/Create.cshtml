@@ -1,6 +1,7 @@
 ﻿@model Randomizer.Model.ElementList
 @{
     Layout = "_Layout";
+    ViewData["Title"] = "Lists";
 }
 
 <h2>Create</h2>
@@ -23,39 +24,8 @@
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
     </div>
-
-    @*<div class="form-group">
-        <label asp-for="Elements" class="col-md-2 control-label">Items</label>
-        <div class="col-md-offset-2 col-md-10">
-            <table>
-                <tr>
-                    @{
-                        int cnt = 0;
-                        List<Randomizer.Web.Models.ListElementViewModel> elements = ViewBag.Elements;
-
-                        foreach (var element in elements)
-                        {
-                            if (cnt++ % 3 == 0)
-                            {
-                                @:</tr><tr>
-                            }
-                            @:<td>
-                                <input type="checkbox"
-                                       name="selectedELements"
-                                       value="@element.ElementID"
-                                       @(Html.Raw(element.InList ? "checked=\"checked\"" : "")) />
-                                    @element.ElementName
-                                    @:</td>
-                        }
-                        @:</tr>
-                    }
-                </table>
-            </div>
-        </div>*@
-
     <div class="form-group">
-        <div class="col-md-2"></div>
-        <div class="col-md-10">
+        <div class="col-md-10 col-md-offset-2">
             <button type="submit" name="Create" class="btn btn-default">Create</button>
         </div>
     </div>
