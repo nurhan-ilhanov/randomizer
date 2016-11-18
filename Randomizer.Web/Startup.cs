@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -55,6 +56,8 @@ namespace Randomizer.Web
             // Repositories
             services.AddScoped<IElementsRepository, ElementsRepository>();
             services.AddScoped<IElementListsRepository, ElementListsRepository>();
+
+            services.AddScoped<IPasswordHasher<ApplicationUser>, BcryptHashing>();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
