@@ -23,6 +23,9 @@ else
                 <th>
                     @Html.DisplayNameFor(model => model.FirstOrDefault().Description)
                 </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstOrDefault().ElementList)
+                </th>
                 <th></th>
             </tr>
         </thead>
@@ -35,6 +38,9 @@ else
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ElementList.Name)
                     </td>
                     <td>
                         <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@item.ID">Edit</a>

@@ -46,7 +46,7 @@ namespace Randomizer.Web.Controllers
 
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id.HasValue == false)
             {
                 return NotFound();
             }
@@ -101,7 +101,7 @@ namespace Randomizer.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id.HasValue == false)
             {
                 return NotFound();
             }
@@ -120,7 +120,7 @@ namespace Randomizer.Web.Controllers
         [HttpPost, ActionName("Edit")]
         public async Task<IActionResult> EditPost(int? id)
         {
-            if (id == null)
+            if (id.HasValue == false)
             {
                 return NotFound();
             }
@@ -156,7 +156,7 @@ namespace Randomizer.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
-            if (id == null)
+            if (id.HasValue == false)
             {
                 return NotFound();
             }
@@ -206,7 +206,7 @@ namespace Randomizer.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DrawItem(int? id)
         {
-            if (id == null)
+            if (id.HasValue == false)
             {
                 return NotFound();
             }
@@ -238,7 +238,7 @@ namespace Randomizer.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DrawItems(int? id, int count)
         {
-            if (id == null)
+            if (id.HasValue == false)
             {
                 return NotFound();
             }
@@ -260,7 +260,7 @@ namespace Randomizer.Web.Controllers
 
                 foreach (var element in randomElements)
                 {
-                    names += element.Name + "\n";
+                    names += element.Name + "<br/>";
                 }
             }
             catch (ArgumentOutOfRangeException)

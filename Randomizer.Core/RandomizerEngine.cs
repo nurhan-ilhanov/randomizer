@@ -20,7 +20,11 @@ namespace Randomizer.Core
         {
             return await Task.Run(() =>
             {
-                if (collection.Count() == 0)
+                if (collection == null)
+                {
+                    throw new ArgumentNullException();
+                }
+                else if (!collection.Any())
                 {
                     throw new ArgumentOutOfRangeException();
                 }
@@ -39,16 +43,18 @@ namespace Randomizer.Core
 
             return await Task.Run(() =>
             {
-                if (numberOfElements > collection.Count())
+                if (collection == null)
+                {
+                    throw new ArgumentNullException();
+                }
+                else if (numberOfElements > collection.Count() || !collection.Any())
                 {
                     throw new ArgumentOutOfRangeException();
                 }
-                else
+
+                for (int i = 0; i < numberOfElements; i++)
                 {
-                    for (int i = 0; i < numberOfElements; i++)
-                    {
-                        returnElements.Add(collectionList.ElementAt(i));
-                    }
+                    returnElements.Add(collectionList.ElementAt(i));
                 }
 
                 return returnElements.AsEnumerable<T>();
@@ -61,11 +67,17 @@ namespace Randomizer.Core
 
             return await Task.Run(() =>
             {
-                int counter = shuffledElements.Count();
-
-                while (counter > 1)
+                if (collection == null)
                 {
-                    counter--;
+                    throw new ArgumentNullException();
+                }
+                else if (!collection.Any())
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+
+                for (int counter = shuffledElements.Count() - 1; counter > 1; counter--)
+                {
                     var randomNumber = this.GenerateRandomNumber(counter);
                     var tempElement = shuffledElements[randomNumber];
 

@@ -33,7 +33,7 @@ namespace Randomizer.Web.Controllers
         {
             var elements = _repository.AllWhere(
                 e => e.UserID == _userManager.GetUserId(User),
-                e => e.User)
+                e => e.User, e => e.ElementList)
                 .OrderBy(e => e.Name)
                 .AsNoTracking()
                 .ToPagedList(_pageSize, page);
@@ -43,7 +43,7 @@ namespace Randomizer.Web.Controllers
 
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id.HasValue == false)
             {
                 return NotFound();
             }
@@ -61,7 +61,7 @@ namespace Randomizer.Web.Controllers
         [HttpGet]
         public IActionResult Create(int? listID)
         {
-            if (listID == null)
+            if (listID.HasValue == false)
             {
                 return NotFound();
             }
@@ -118,7 +118,7 @@ namespace Randomizer.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id.HasValue == false)
             {
                 return NotFound();
             }
@@ -136,7 +136,7 @@ namespace Randomizer.Web.Controllers
         [HttpPost, ActionName("Edit")]
         public async Task<IActionResult> EditPost(int? id)
         {
-            if (id == null)
+            if (id.HasValue == false)
             {
                 return NotFound();
             }
@@ -167,7 +167,7 @@ namespace Randomizer.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
-            if (id == null)
+            if (id.HasValue == false)
             {
                 return NotFound();
             }

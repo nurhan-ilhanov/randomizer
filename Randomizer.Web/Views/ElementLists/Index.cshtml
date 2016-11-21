@@ -6,7 +6,7 @@
 
 <h2>Lists</h2>
 
-@if (Model.Count() == 0)
+@if (!Model.Any())
 {
     <div class="well">
         There are no created lists. <a class="btn btn-primary" asp-action="Create">Add New</a>
@@ -54,38 +54,4 @@ else
     </table>
     <pager source="Model" />
 }
-
-
-<script>
-    $('.getRandom').on('click', function () {
-        var itemId = $(this).attr('data-id');
-
-        $.ajax({
-            url: '/ElementLists/DrawItem/',
-            type: 'POST',
-            data: { id: itemId },
-            success: function (result) {
-                alert(result.ans);
-            }
-        });
-    });
-
-    $('.getRandoms').on('click', function () {
-
-        var itemId = $(this).attr('data-id');
-        var numberOfElements = prompt("How many items do you want to choose?", "1");
-
-        if (numberOfElements != null) {
-            $.ajax({
-                url: '/ElementLists/DrawItems/',
-                type: 'POST',
-                data: { id: itemId, count: numberOfElements },
-                success: function (result) {
-                    alert(result.ans);
-                }
-            });
-        }
-    });
-
-</script>
-
+@Html.Partial("_Modals")
