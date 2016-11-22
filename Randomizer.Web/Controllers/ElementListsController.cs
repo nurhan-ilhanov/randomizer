@@ -11,6 +11,7 @@ using Randomizer.Web.Models;
 using Randomizer.Core;
 using Microsoft.AspNetCore.Authorization;
 using Randomizer.Web.Data.Repositories;
+using Sakura.AspNetCore;
 
 namespace Randomizer.Web.Controllers
 {
@@ -20,27 +21,32 @@ namespace Randomizer.Web.Controllers
         private readonly IElementListsRepository _repository;
         private readonly IElementsRepository _elementsRepo;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly int _pageSize;
 
-        public ElementListsController(IElementListsRepository repository, IElementsRepository elementsRepo, UserManager<ApplicationUser> userManager)
+        public ElementListsController(IElementListsRepository repository,
+            IElementsRepository elementsRepo,
+            UserManager<ApplicationUser> userManager,
+            int pageSize = 10)
         {
+            _pageSize = pageSize;
             _repository = repository;
             _elementsRepo = elementsRepo;
             _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int page = 1)
         {
             var lists = _repository.AllWhere(l => l.UserID == _userManager.GetUserId(User))
                 .OrderBy(e => e.Name)
                 .AsNoTracking()
-                .ToList();
+                .ToPagedList(_pageSize, page);
 
             return View(lists);
         }
 
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id.HasValue == false)
             {
                 return NotFound();
             }
@@ -88,14 +94,14 @@ namespace Randomizer.Web.Controllers
                     "Try again, and if the problem persists " +
                     "see your system administrator.");
             }
-            
+
             return View(model);
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id.HasValue == false)
             {
                 return NotFound();
             }
@@ -107,14 +113,14 @@ namespace Randomizer.Web.Controllers
             {
                 return NotFound();
             }
-            
+
             return View(list);
         }
 
         [HttpPost, ActionName("Edit")]
         public async Task<IActionResult> EditPost(int? id)
         {
-            if (id == null)
+            if (id.HasValue == false)
             {
                 return NotFound();
             }
@@ -145,12 +151,12 @@ namespace Randomizer.Web.Controllers
 
             return View(listToUpdate);
         }
-       
+
 
         [HttpGet]
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
-            if (id == null)
+            if (id.HasValue == false)
             {
                 return NotFound();
             }
@@ -200,7 +206,7 @@ namespace Randomizer.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DrawItem(int? id)
         {
-            if (id == null)
+            if (id.HasValue == false)
             {
                 return NotFound();
             }
@@ -232,7 +238,7 @@ namespace Randomizer.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DrawItems(int? id, int count)
         {
-            if (id == null)
+            if (id.HasValue == false)
             {
                 return NotFound();
             }
@@ -254,7 +260,7 @@ namespace Randomizer.Web.Controllers
 
                 foreach (var element in randomElements)
                 {
-                    names += element.Name + "\n";
+                    names += element.Name + "<br/>";
                 }
             }
             catch (ArgumentOutOfRangeException)

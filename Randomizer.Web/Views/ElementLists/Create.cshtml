@@ -1,6 +1,7 @@
 ﻿@model Randomizer.Model.ElementList
 @{
     Layout = "_Layout";
+    ViewData["Title"] = "Lists";
 }
 
 <h2>Create</h2>
@@ -8,58 +9,29 @@
 <hr />
 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
 <form class="form-horizontal" asp-controller="ElementLists" asp-action="Create" method="post">
-
-    <div class="form-group">
-        <label asp-for="Name" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Description" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <textarea asp-for="Description" class="form-control"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
-    </div>
-
-    @*<div class="form-group">
-        <label asp-for="Elements" class="col-md-2 control-label">Items</label>
-        <div class="col-md-offset-2 col-md-10">
-            <table>
-                <tr>
-                    @{
-                        int cnt = 0;
-                        List<Randomizer.Web.Models.ListElementViewModel> elements = ViewBag.Elements;
-
-                        foreach (var element in elements)
-                        {
-                            if (cnt++ % 3 == 0)
-                            {
-                                @:</tr><tr>
-                            }
-                            @:<td>
-                                <input type="checkbox"
-                                       name="selectedELements"
-                                       value="@element.ElementID"
-                                       @(Html.Raw(element.InList ? "checked=\"checked\"" : "")) />
-                                    @element.ElementName
-                                    @:</td>
-                        }
-                        @:</tr>
-                    }
-                </table>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="form-group">
+                <label asp-for="Name" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
             </div>
-        </div>*@
-
-    <div class="form-group">
-        <div class="col-md-2"></div>
-        <div class="col-md-10">
-            <button type="submit" name="Create" class="btn btn-default">Create</button>
+            <div class="form-group">
+                <label asp-for="Description" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <textarea asp-for="Description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10 col-md-offset-2">
+                    <button type="submit" name="Create" class="btn btn-primary">Create</button>
+                </div>
+            </div>
         </div>
     </div>
-
 </form>
 
 <div class="form-group">

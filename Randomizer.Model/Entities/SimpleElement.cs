@@ -16,6 +16,8 @@ namespace Randomizer.Model
         public string Description { get; set; }
 
         public virtual ApplicationUser User { get; set; }
+
+        [Display(Name = "List")]
         public virtual ElementList ElementList { get; set; }
     }
 }

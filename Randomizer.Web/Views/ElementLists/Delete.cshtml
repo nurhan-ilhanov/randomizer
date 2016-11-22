@@ -1,9 +1,11 @@
 ﻿@model Randomizer.Model.ElementList
 @{
     Layout = "_Layout";
+    ViewData["Title"] = "Lists";
 }
 
 <h3>Are you sure you want to delete this item?</h3>
+<hr />
 <p class="text-danger">@ViewData["ErrorMessage"]</p>
 
 <h4>@Html.DisplayFor(model => model.Name)</h4>

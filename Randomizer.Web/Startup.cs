@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +10,7 @@ using Randomizer.Model;
 using Randomizer.Web.Data;
 using Randomizer.Web.Data.Repositories;
 using Randomizer.Web.Services;
+using Sakura.AspNetCore.Mvc;
 
 namespace Randomizer.Web
 {
@@ -55,9 +57,17 @@ namespace Randomizer.Web
             services.AddScoped<IElementsRepository, ElementsRepository>();
             services.AddScoped<IElementListsRepository, ElementListsRepository>();
 
+            services.AddScoped<IPasswordHasher<ApplicationUser>, BcryptHashing>();
+
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            services.AddBootstrapPagerGenerator(options =>
+            {
+                // Use default pager options.
+                options.ConfigureDefault();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

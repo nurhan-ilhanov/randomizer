@@ -1,6 +1,7 @@
 ﻿@model Randomizer.Model.ElementList
 @{
     Layout = "_Layout";
+    ViewData["Title"] = "Lists";
 }
 
 <h2>Edit</h2>
@@ -9,26 +10,30 @@
 
 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
 <form class="form-horizontal" asp-controller="ElementLists" asp-action="Edit" method="post">
-    <div class="form-group">
-        <label asp-for="Name" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="form-group">
+                <label asp-for="Name" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <textarea asp-for="Description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10 col-md-offset-2">
+                    <button type="submit" name="Save" class="btn btn-primary">Save</button>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="form-group">
-        <label asp-for="Description" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <textarea asp-for="Description" class="form-control"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-2"></div>
-        <div class="col-md-10">
-            <button type="submit" name="Save" class="btn btn-primary">Save</button>
-        </div>
-    </div>
+
     @Html.DisplayFor(m => m.Elements, "Elements")
 </form>
 
