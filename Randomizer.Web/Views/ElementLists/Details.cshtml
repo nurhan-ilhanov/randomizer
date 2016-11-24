@@ -8,17 +8,19 @@
 <h4>List</h4>
 <hr />
 
-<h4>@Html.DisplayFor(model => model.Name)</h4>
-<p>@Html.DisplayFor(model => model.Description)</p>
+<div class="well">
+    <h3>@Html.DisplayFor(model => model.Name)</h3>
+    <p>@Html.DisplayFor(model => model.Description)</p>
 
-<ul>
-    @foreach (var item in Model.Elements)
-    {
-        <li>@Html.DisplayFor(modelItem => item.Name)</li>
-    }
-</ul>
+    <ul>
+        @foreach (var item in Model.Elements)
+            {
+            <li>@Html.DisplayFor(modelItem => item.Name)</li>
+        }
+    </ul>
+</div>
 
 <p>
-    <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@Model.ID">Edit</a> 
-    <a class="btn btn-default btn-sm" asp-action="Index">Back to list</a>
+    <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@Model.ID"><i class="fa fa-edit"></i> Edit</a>
+    <a class="btn btn-default btn-sm" asp-action="Index"><i class="fa fa-arrow-left"></i> Back to list</a>
 </p>

@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Randomizer.Model
 {
+    /// <summary>
+    /// Hashes passwords with BCrypt encryption algorithm
+    /// using the BCrypt.Net library
+    /// </summary>
     public class BcryptHashing : IPasswordHasher<ApplicationUser>
     {
         private static string GetRandomSalt()

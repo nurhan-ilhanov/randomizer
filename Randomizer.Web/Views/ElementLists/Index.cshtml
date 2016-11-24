@@ -40,13 +40,25 @@ else
                         @Html.DisplayFor(modelItem => item.Description)
                     </td>
                     <td>
-                        <a asp-action="Create" asp-controller="Elements"asp-route-listID="@item.ID"
-                           class="btn btn-sm btn-success">Add Item</a>
-                        <a href="#" class="btn btn-sm btn-primary getRandom" data-id="@item.ID">Draw Item</a>
-                        <a href="#" class="btn btn-sm btn-primary getRandoms" data-id="@item.ID">Draw Items</a>
-                        <a class="btn btn-sm btn-default" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
-                        <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.ID">Details</a>
-                        <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        <a asp-action="Create" asp-controller="Elements" asp-route-listID="@item.ID"
+                           class="btn btn-sm btn-success">
+                            <i class="fa fa-plus"></i> Add Item
+                        </a>
+                        <a href="#" class="btn btn-sm btn-primary getRandom" data-id="@item.ID">
+                            <i class="fa fa-magic"></i> Draw Item
+                        </a>
+                        <a href="#" class="btn btn-sm btn-primary getRandoms" data-id="@item.ID">
+                            <i class="fa fa-magic"></i> Draw Items
+                        </a>
+                        <a class="btn btn-sm btn-default" asp-action="Edit" asp-route-id="@item.ID">
+                            <i class="fa fa-edit"></i> Edit
+                        </a>
+                        <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.ID">
+                            <i class="fa fa-info"></i> Details
+                        </a>
+                        <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.ID">
+                            <i class="fa fa-trash"></i> Delete
+                        </a>
                     </td>
                 </tr>
             }
