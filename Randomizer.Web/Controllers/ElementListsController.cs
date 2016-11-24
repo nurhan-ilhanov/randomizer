@@ -12,6 +12,7 @@ using Randomizer.Core;
 using Microsoft.AspNetCore.Authorization;
 using Randomizer.Web.Data.Repositories;
 using Sakura.AspNetCore;
+using Microsoft.Extensions.Localization;
 
 namespace Randomizer.Web.Controllers
 {
@@ -203,6 +204,11 @@ namespace Randomizer.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// Takes an item from a list.
+        /// </summary>
+        /// <param name="id">The ID of the list</param>
+        /// <returns>The name of the item</returns>
         [HttpPost]
         public async Task<IActionResult> DrawItem(int? id)
         {
@@ -235,6 +241,12 @@ namespace Randomizer.Web.Controllers
             return Json(new { ans = elementName });
         }
 
+        /// <summary>
+        /// Takes N number of items from a list.
+        /// </summary>
+        /// <param name="id">ID of the list</param>
+        /// <param name="count">The number of items to take</param>
+        /// <returns>A string with names of the items</returns>
         [HttpPost]
         public async Task<IActionResult> DrawItems(int? id, int count)
         {

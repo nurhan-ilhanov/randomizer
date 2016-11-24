@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Randomizer.Core
 {
+    /// <summary>
+    /// A class for shuffling a collection, taking random elements from a collection.
+    /// </summary>
     public class RandomizerEngine
     {
         private Random rnd = new Random(DateTime.Now.Millisecond * DateTime.Now.Second);
@@ -16,6 +19,12 @@ namespace Randomizer.Core
             return rnd.Next(0, maxValue);
         }
 
+        /// <summary>
+        /// Takes a random element from a collection
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <returns>Element from the collection</returns>
         public async Task<T> GetElement<T>(IQueryable<T> collection) where T : IRandomElement
         {
             return await Task.Run(() =>
@@ -36,6 +45,13 @@ namespace Randomizer.Core
 
         }
 
+        /// <summary>
+        /// Takes specific number of random elements from a collection.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <param name="numberOfElements">How many elements the user wants to take</param>
+        /// <returns>A specific number of elements from the collection</returns>
         public async Task<IEnumerable<T>> GetElements<T>(IQueryable<T> collection, int numberOfElements) where T : IRandomElement
         {
             var returnElements = new List<T>();
@@ -61,6 +77,12 @@ namespace Randomizer.Core
             });
         }
 
+        /// <summary>
+        /// Shuffles a collection.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <returns>Shuffsled collection</returns>
         public async Task<IEnumerable<T>> Shuffle<T>(IQueryable<T> collection) where T : IRandomElement
         {
             var shuffledElements = collection.ToList();

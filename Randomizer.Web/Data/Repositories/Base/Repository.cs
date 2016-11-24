@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Randomizer.Web.Data.Repositories
 {
+    /// <summary>
+    /// A base repository whitch act as an abstract layer for accessing the DbSets.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class Repository<T> : IRepository<T> where T : BaseEntity, new()
     {
         private readonly ApplicationDbContext _dbContext;
@@ -37,22 +41,42 @@ namespace Randomizer.Web.Data.Repositories
             _dbContext.Entry(entity).State = EntityState.Modified;
         }
 
+        /// <summary>
+        /// Returns a single entity found by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the entity</param>
+        /// <returns></returns>
         public async Task<T> GetById(int id)
         {
             return await _dbContext.Set<T>().AsNoTracking()
                 .SingleOrDefaultAsync(m => m.ID == id);
         }
 
+        /// <summary>
+        /// Returns all entities of the DbSet.
+        /// </summary>
+        /// <returns></returns>
         public IQueryable<T> All()
         {
             return _dbContext.Set<T>();
         }
 
+        /// <summary>
+        /// Takes a single element from a DbSet.
+        /// </summary>
+        /// <param name="predicate">A specified condition</param>
+        /// <returns></returns>
         public async Task<T> GetSingle(Expression<Func<T, bool>> predicate)
         {
             return await _dbContext.Set<T>().SingleOrDefaultAsync(predicate);
         }
 
+        /// <summary>
+        /// Takes a single element from a DbSet.
+        /// </summary>
+        /// <param name="predicate">A specified condition</param>
+        /// <param name="includeProperties">Related entities to include in the query</param>
+        /// <returns></returns>
         public async Task<T> GetSingle(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties)
         {
             IQueryable<T> query = _dbContext.Set<T>();
@@ -65,6 +89,12 @@ namespace Randomizer.Web.Data.Repositories
             return  await query.Where(predicate).SingleOrDefaultAsync();
         }
 
+        /// <summary>
+        /// Filters a sequence based on a condition.
+        /// </summary>
+        /// <param name="predicate">A specified condition</param>
+        /// <param name="includeProperties">Related entities to include in the query</param>
+        /// <returns></returns>
         public IQueryable<T> AllWhere(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties)
         {
             IQueryable<T> query = _dbContext.Set<T>();
@@ -77,6 +107,11 @@ namespace Randomizer.Web.Data.Repositories
             return query.Where(predicate);
         }
 
+        /// <summary>
+        /// Filters a sequence based on a condition.
+        /// </summary>
+        /// <param name="predicate">A specified condition</param>
+        /// <returns></returns>
         public IQueryable<T> AllWhere(Expression<Func<T, bool>> predicate)
         {
             return _dbContext.Set<T>()

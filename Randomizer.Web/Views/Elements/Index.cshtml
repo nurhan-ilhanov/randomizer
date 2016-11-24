@@ -43,9 +43,9 @@ else
                         @Html.DisplayFor(modelItem => item.ElementList.Name)
                     </td>
                     <td>
-                        <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
-                        <a class="btn btn-default btn-sm" asp-action="Details" asp-route-id="@item.ID">Details</a>
-                        <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@item.ID"><i class="fa fa-edit"></i> Edit</a>
+                        <a class="btn btn-default btn-sm" asp-action="Details" asp-route-id="@item.ID"><i class="fa fa-info"></i> Details</a>
+                        <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.ID"><i class="fa fa-trash"></i> Delete</a>
                     </td>
                 </tr>
             }
